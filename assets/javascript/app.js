@@ -18,18 +18,61 @@
    		// Get the location from the autocomplete object.
      	place = autocomplete.getPlace();
     }
-    
+
+//https://api.breezometer.com/baqi/?lat=28.3338002802915&lon=-81.3577900697085&key=de4fef0f7fb349f29f3f21c275018069&fields=breezometer_aqi,random_recommendations,breezometer_color,breezometer_description,pollutants
+//f17090c3cf4a448f981b47f391d41295
     //get breezeOmeter data
-    function breezeOmeter (lat, lng) {              
-        var queryURL = 'https://api.breezometer.com/baqi/?lat='+lat+'&lon='+lng+'&key=f17090c3cf4a448f981b47f391d41295'
+    function getBOM (lat, lng) {   
+        var fields = "&breezometer_aqi,random_recommendations,breezometer_color,breezometer_description,pollutants"           
+        var queryURL = 'https://api.breezometer.com/baqi/?lat='+lat+'&lon='+lng+'&key=de4fef0f7fb349f29f3f21c275018069' + fields;
         $.ajax({
-           url: queryURL, 
+            url: queryURL, 
             method: 'GET',
         }).done(function(response) {
-            console.log(response);
-            //javascript code here
+            aqi = response.breezometer_aqi;
+            color = response.breezometer_color;
+            description = response.breezometer_description;
+            recoChildren = response.random_recommendations.children;
+            recoHealth = response.random_recommendations.health;
+            recInside = response.random_recommendations.inside;
+            recOutside = response.random_recommendations.outside;
+            recSport = response.random_recommendations.sport;
+
+            co = response.pollutants.co.concentration;
+            coDesc = response.pollutants.co.pollutant_description;
+            no2 = response.pollutants.no2.concentration;
+            no2Desc = response.pollutants.no2.pollutant_description;
+            o3 = response.pollutants.o3.concentration;
+            o3Desc = response.pollutants.o3.pollutant_description;
+            console.log("aqi: " + aqi);
+            console.log("Color: " + color);
+            console.log("Description: " + description);
+            console.log("Recommendations for children: " + recoChildren);
+            console.log("Recommendations for Helath: " + recoHealth);
+            console.log("Recommendations for inside: " + recInside);
+            console.log("Recommendations for outside: " + recOutside);
+            console.log("Recommendations for sport: " + recSport);
+
+            console.log("Co: " + co);
+            console.log("Co Rescription: " + coDesc);
+            console.log("No2: " + no2);
+            console.log("No2 description: " + no2Desc);
+            console.log("o3: " + o3);
+            console.log("o3Desc: " + o3Desc);
         })
     };
+
+    function getProPublica(){
+        $.ajax({
+            url: "https://api.propublica.org/congress/v1/115/senate/members.json",
+            type: "GET",
+            dataType: 'json',
+            headers: {'X-API-Key': 'GGL4y5FC2p9Eea8fAmrR16BZOg90Xott8D8D6NVU'}
+        }).done(function(data){
+            console.log(data)
+        });
+    }
+
 
 $(document).ready(function(){
 	//Button search click event
@@ -44,7 +87,8 @@ $(document).ready(function(){
      			lat = place.geometry.location.lat();
      			lng = place.geometry.location.lng();
    
-    			breezeOmeter(lat, lng);
+    			getBOM(lat, lng);
+                getProPublica();
      		}
      	}
     });
